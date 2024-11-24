@@ -21,12 +21,12 @@ export default function HealthMetricsForm() {
     e.preventDefault()
     try {
       setIsSubmitting(true)
-      await metricsApi.create(metrics)
-      // 清空表单
+      await metricsApi.create({
+        weight: metrics.weight,
+        date: new Date().toISOString().split('T')[0]
+      })
       setMetrics({ weight: '', systolic: '', diastolic: '' })
-      // 可以添加成功提示
       alert('记录成功')
-      // 触发列表刷新（后续实现）
       window.location.reload()
     } catch (error) {
       console.error('提交失败:', error)

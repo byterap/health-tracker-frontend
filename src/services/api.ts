@@ -1,12 +1,12 @@
 import axios from 'axios'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://你的Railway或Render后端地址/api'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://你的Render后端地址/api'
 
 console.log('API Base URL:', API_BASE_URL)
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -63,9 +63,17 @@ export interface UserSettings {
   height: number
 }
 
+export interface MetricInput {
+  weight: string;
+  date?: string;  // 使日期可选
+}
+
 export const metricsApi = {
   getAll: () => api.get<WeightRecord[]>('/metrics'),
-  create: (data: { weight: string, date: string }) => api.post<WeightRecord>('/metrics', data)
+  create: (data: MetricInput) => api.post<WeightRecord>('/metrics', {
+    ...data,
+    date: data.date || new Date().toISOString().split('T')[0]  // 如果没有提供日期，使用当前日期
+  })
 }
 
 export const settingsApi = {
